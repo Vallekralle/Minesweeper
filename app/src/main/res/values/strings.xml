@@ -6,4 +6,6 @@
     <string name="play">Play!</string>
     <string name="created_by">Created by Dalina and Valentin</string>
     <string name="clock">00:00</string>
+    <!-- &lt; stays for the "<"-operator -->
+    <string name="back">&lt;- Back</string>
 </resources>

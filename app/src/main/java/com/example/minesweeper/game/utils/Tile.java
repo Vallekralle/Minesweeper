@@ -24,6 +24,6 @@ public class Tile {
     }
 
     public void setNumber(int number) {
-        if(!isBomb) this.number = number;
+        this.number = number;
     }
 }

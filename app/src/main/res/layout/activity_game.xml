@@ -15,17 +15,6 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.85" />
 
-    <ImageButton
-        android:id="@+id/imgBtnBackGame"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:backgroundTint="#00FFFFFF"
-        app:layout_constraintBottom_toTopOf="@+id/guideline3"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/arrow_back" />
-
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guidelineVerGame"
         android:layout_width="wrap_content"
@@ -95,5 +84,20 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/minesweeper_smiley_good" />
+
+    <Button
+        android:id="@+id/btnBackGame"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:backgroundTint="#4b4b4b"
+        android:fontFamily="@font/pixelify_sans"
+        android:text="@string/back"
+        android:textAlignment="center"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@+id/guideline3"
+        app:layout_constraintDimensionRatio="w,1:1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

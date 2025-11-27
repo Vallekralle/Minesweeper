@@ -2,6 +2,7 @@ package com.example.minesweeper.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
@@ -20,7 +21,7 @@ public class GameActivity extends AppCompatActivity {
 
     private Bundle bundle;
 
-    private ImageButton imgBtnBackGame;
+    private Button btnBackGame;
     private ImageView imgViewField;
 
     @Override
@@ -29,8 +30,8 @@ public class GameActivity extends AppCompatActivity {
         setContentView(R.layout.activity_game);
 
         // Init the back button
-        imgBtnBackGame = findViewById(R.id.imgBtnBackGame);
-        imgBtnBackGame.setOnClickListener(view -> {
+        btnBackGame = findViewById(R.id.btnBackGame);
+        btnBackGame.setOnClickListener(view -> {
             returnToMenu();
         });
 
