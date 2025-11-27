@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Minesweeper</string>
+    <string name="easy">Easy</string>
+    <string name="medium">Medium</string>
+    <string name="hard">Hard</string>
+    <string name="play">Play!</string>
+    <string name="created_by">Created by Dalina and Valentin</string>
+    <string name="clock">00:00</string>
+</resources>
