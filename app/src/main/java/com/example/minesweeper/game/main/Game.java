@@ -4,16 +4,16 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.view.MotionEvent;
-import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.minesweeper.R;
-import com.example.minesweeper.game.logic.ClickHandler;
+import com.example.minesweeper.game.logic.TouchHandler;
 import com.example.minesweeper.game.logic.Clock;
 import com.example.minesweeper.game.logic.Difficulty;
 import com.example.minesweeper.game.ui.Field;
+import com.example.minesweeper.game.ui.ImageLoader;
 
 import java.util.Objects;
 
@@ -25,20 +25,27 @@ public class Game {
     private Canvas canvas;
     private ImageView imgViewField;
     private TextView textClock;
+    private ImageButton imgBtnFlag, imgBtnSmiley;
 
     private Field field;
     private Clock clock;
-    private ClickHandler clickHandler;
+    private TouchHandler touchHandler;
 
-    public Game(ImageView imgViewField, Difficulty diff, Context context) {
+    public Game(Context context, Difficulty diff) {
         this.diff = diff;
         this.context = context;
         Objects.requireNonNull(diff);
         Objects.requireNonNull(context);
 
-        // Initialize image view and start thread to configure the canvas
-        this.imgViewField = imgViewField;
-        this.imgViewField.post(this::configureCanvas);
+        // Initialize views and start thread to configure the canvas
+        initViews();
+        imgViewField.post(this::configureCanvas);
+    }
+
+    private void initViews() {
+        imgViewField = ((Activity) context).findViewById(R.id.imgViewField);
+        imgBtnFlag = ((Activity) context).findViewById(R.id.imgBtnFlag);
+        imgBtnSmiley = ((Activity) context).findViewById(R.id.imgBtnSmiley);
     }
 
     private void configureCanvas() {
@@ -50,10 +57,9 @@ public class Game {
 
         Objects.requireNonNull(bitmap);
         imgViewField.setImageBitmap(bitmap);
-
         canvas = new Canvas(bitmap);
-        Objects.requireNonNull(canvas);
 
+        Objects.requireNonNull(canvas);
         start();
     }
 
@@ -63,10 +69,8 @@ public class Game {
         field = new Field(context, canvas, diff);
         clock = new Clock(context, textClock);
 
-        // Handle click events on the image view
-        Objects.requireNonNull(field);
-        clickHandler = new ClickHandler(field, diff.getMineProb());
-        this.imgViewField.setOnTouchListener(this::onTouch);
+        // Handle touch events on the image view
+        handleTouchEvents();
 
         /*
         * Starting a new thread for the clock, which can be
@@ -76,9 +80,21 @@ public class Game {
         new Thread(clock).start();
     }
 
-    public boolean onTouch(View view, MotionEvent event) {
-        Objects.requireNonNull(clickHandler);
-        clickHandler.handleEvent(event);
-        return true;
+    private void handleTouchEvents() {
+        Objects.requireNonNull(field);
+        touchHandler = new TouchHandler(this, field, diff.getMineProb());
+
+        // Handle field interactions
+        imgViewField.setOnTouchListener(touchHandler::handleFieldEvent);
+
+        // Handle flag interactions
+        imgBtnFlag.setOnTouchListener(touchHandler::handleFlagEvent);
+
+        // Handle smiley interactions
+        imgBtnSmiley.setOnTouchListener(touchHandler::handleSmileyEvent);
+    }
+
+    public void replaceImg(ImageButton imgBtn, ImageLoader newImg) {
+        imgBtn.setImageResource(newImg.getId());
     }
 }

@@ -57,7 +57,7 @@ public class GameActivity extends AppCompatActivity {
         Objects.requireNonNull(value);
         selectDiff(value);
         
-        game = new Game(imgViewField, diff, this);
+        game = new Game(this, diff);
     }
 
     private void selectDiff(String value) {

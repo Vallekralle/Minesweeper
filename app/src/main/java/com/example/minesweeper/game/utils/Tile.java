@@ -23,6 +23,10 @@ public class Tile {
         return y;
     }
 
+    public boolean isBomb() {
+        return isBomb;
+    }
+
     public void setNumber(int number) {
         this.number = number;
     }
