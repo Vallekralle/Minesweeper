@@ -14,6 +14,7 @@ public class Field {
 
     private final Context context;
     private final Canvas canvas;
+    private Bitmap bitmap;
 
     private final int winWidth, winHeight, row, col;
     private int squareSize, startPosX, startPosY;
@@ -27,8 +28,15 @@ public class Field {
         this.row = diff.getRow();
         this.col = diff.getCol();
 
+        initBitmap();
         calculateSquareSize();
         createFields();
+    }
+
+    private void initBitmap() {
+        bitmap = BitmapFactory.decodeResource(
+                context.getResources(), ImageLoader.COVER_TILE.getId()
+        );
     }
 
     private void calculateSquareSize() {
@@ -59,19 +67,25 @@ public class Field {
             int x = startPosX;
 
             for(int j = 0; j < col; j++) {
-                tileField[i][j] = new Tile(x, y);
-                RectF rectDst = new RectF(x, y, x + squareSize, y + squareSize);
-                drawImg(ImageLoader.COVER_TILE.getId(), rectDst);
+                tileField[i][j] = new Tile(x, y, squareSize);
+                drawImg(bitmap, tileField[i][j].getRect());
                 x += squareSize;
             }
             y += squareSize;
         }
     }
 
-    private void drawImg(int id, RectF dst) {
-        Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), id);
+    /**
+    * CANVAS DRAWING
+    * */
+
+    public void drawImg(Bitmap bitmap, RectF dst) {
         canvas.drawBitmap(bitmap, null, dst, null);
     }
+
+    /**
+    * GETTER
+    *  */
 
     public Tile[][] getTileField() {
         return tileField;

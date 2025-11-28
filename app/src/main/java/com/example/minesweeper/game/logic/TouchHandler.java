@@ -1,5 +1,7 @@
 package com.example.minesweeper.game.logic;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageButton;
@@ -14,6 +16,7 @@ import java.util.Objects;
 import java.util.Random;
 
 public class TouchHandler {
+    private Bitmap flagActivatedBitmap, flagDeactivatedBitmap;
     private Game game;
     private Field field;
     private Random random;
@@ -31,6 +34,13 @@ public class TouchHandler {
     }
 
     private void init() {
+        flagActivatedBitmap = BitmapFactory.decodeResource(
+                game.getContext().getResources(), ImageLoader.FLAG_ACTIVATED.getId()
+        );
+        flagDeactivatedBitmap = BitmapFactory.decodeResource(
+                game.getContext().getResources(), ImageLoader.FLAG_DEACTIVATED.getId()
+        );
+
         random = new Random();
         tileField = field.getTileField();
         squareSize = field.getSquareSize();
@@ -58,7 +68,7 @@ public class TouchHandler {
             placeMines(clickedTile);
             calculateTileNumbers();
         } else if(placeFlagMode) {
-            // TODO: Place flag on the corresponding tile
+            checkFlagState(clickedTile);
         }
         // TODO: Reveal the tile info
         return true;
@@ -99,6 +109,10 @@ public class TouchHandler {
         return null;
     }
 
+    /**
+    * MINES
+    * */
+
     private void placeMines(Tile clickedTile) {
         Objects.requireNonNull(tileField);
         Objects.requireNonNull(random);
@@ -115,6 +129,10 @@ public class TouchHandler {
 
         minesPlaced = true;
     }
+
+    /**
+    * TILE-NUMBERS
+    * */
 
     private void calculateTileNumbers() {
         for(int row = 0; row < tileField.length; row++) {
@@ -153,6 +171,10 @@ public class TouchHandler {
         return count;
     }
 
+    /**
+    * FLAGS
+    * */
+
     private void changeFlagMode(View view) {
         placeFlagMode = !placeFlagMode;
 
@@ -161,5 +183,15 @@ public class TouchHandler {
         } else {
             game.replaceImg((ImageButton) view, ImageLoader.FLAG_DEACTIVATED);
         }
+    }
+
+    private void checkFlagState(Tile tile) {
+        if (tile.hasFlag()) {
+            field.drawImg(flagActivatedBitmap, tile.getRect());
+        } else {
+            field.drawImg(flagDeactivatedBitmap, tile.getRect());
+        }
+
+        tile.switchFlag();
     }
 }

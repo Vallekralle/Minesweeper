@@ -97,4 +97,8 @@ public class Game {
     public void replaceImg(ImageButton imgBtn, ImageLoader newImg) {
         imgBtn.setImageResource(newImg.getId());
     }
+
+    public Context getContext() {
+        return context;
+    }
 }
