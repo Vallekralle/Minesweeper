@@ -3,25 +3,37 @@ package com.example.minesweeper.game.utils;
 import android.graphics.RectF;
 
 public class Tile {
-    private int x, y, size, number;
-    private boolean isBomb, hasFlag;
+    public static final float TEXT_SIZE = 60f;
 
-    public Tile(int x, int y, int size) {
+    private final Index index;
+    private final int x, y, size;
+    private int number;
+    private boolean isMine, hasFlag, isRevealed;
+
+    public Tile(int x, int y, int size, Index index) {
         this.x = x;
         this.y = y;
         this.size = size;
+        this.index = index;
 
-        isBomb = false;
-        hasFlag = false;
+        isMine = hasFlag = isRevealed = false;
     }
 
-    public void activateBomb() {
-        isBomb = true;
+    public void activateMine() {
+        isMine = true;
+    }
+
+    public void reveal() {
+        isRevealed = true;
     }
 
     public void switchFlag() {
         hasFlag = !hasFlag;
     }
+
+    /**
+    * GETTER
+    * */
 
     public int getX() {
         return x;
@@ -31,17 +43,33 @@ public class Tile {
         return y;
     }
 
+    public int getNumber() {
+        return number;
+    }
+
+    public Index getIndex() {
+        return index;
+    }
+
     public RectF getRect() {
         return new RectF(x, y, x + size, y + size);
     }
 
-    public boolean isBomb() {
-        return isBomb;
+    public boolean isMine() {
+        return isMine;
     }
 
     public boolean hasFlag() {
         return hasFlag;
     }
+
+    public boolean isRevealed() {
+        return isRevealed;
+    }
+
+    /**
+    * SETTER
+    * */
 
     public void setNumber(int number) {
         this.number = number;

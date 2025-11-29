@@ -4,9 +4,13 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.RectF;
+import android.widget.Toast;
 
 import com.example.minesweeper.game.logic.Difficulty;
+import com.example.minesweeper.game.utils.Index;
 import com.example.minesweeper.game.utils.Tile;
 
 public class Field {
@@ -67,7 +71,7 @@ public class Field {
             int x = startPosX;
 
             for(int j = 0; j < col; j++) {
-                tileField[i][j] = new Tile(x, y, squareSize);
+                tileField[i][j] = new Tile(x, y, squareSize, new Index(i, j));
                 drawImg(bitmap, tileField[i][j].getRect());
                 x += squareSize;
             }
@@ -83,9 +87,20 @@ public class Field {
         canvas.drawBitmap(bitmap, null, dst, null);
     }
 
+    public void drawCenterNumber(Tile tile, Paint paint) {
+        String num = String.valueOf(tile.getNumber());
+        Rect bounds = new Rect();
+        paint.getTextBounds(num, 0, num.length(), bounds);
+
+        int x = tile.getX() + squareSize / 2 - bounds.width() / 2;
+        int y = tile.getY() + squareSize / 2 + bounds.height() / 2;
+
+        canvas.drawText(String.valueOf(tile.getNumber()), x, y, paint);
+    }
+
     /**
     * GETTER
-    *  */
+    * */
 
     public Tile[][] getTileField() {
         return tileField;
