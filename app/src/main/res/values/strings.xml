@@ -7,4 +7,5 @@
     <string name="created_by">Created by Dalina and Valentin</string>
     <string name="clock">00:00</string>
     <string name="back">Back</string>
+    <string name="flags">Flags left: ?</string>
 </resources>

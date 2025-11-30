@@ -16,6 +16,7 @@ import com.example.minesweeper.game.ui.Field;
 import com.example.minesweeper.game.ui.ImageLoader;
 
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Game {
     private Difficulty diff;
@@ -24,12 +25,13 @@ public class Game {
     private Bitmap bitmap;
     private Canvas canvas;
     private ImageView imgViewField;
-    private TextView textClock;
+    private TextView textClock, textFlagsLeft;
     private ImageButton imgBtnFlag, imgBtnSmiley;
 
     private Field field;
     private Clock clock;
     private TouchHandler touchHandler;
+    private Thread clockThread;
 
     public Game(Context context, Difficulty diff) {
         this.diff = diff;
@@ -65,6 +67,7 @@ public class Game {
 
     private void start() {
         textClock = ((Activity)context).findViewById(R.id.textClock);
+        textFlagsLeft = ((Activity) context).findViewById(R.id.textFlagsLeft);
 
         field = new Field(context, canvas, diff);
         clock = new Clock(context, textClock);
@@ -77,7 +80,8 @@ public class Game {
         * interrupted without disturbing other threads.
         * */
         Objects.requireNonNull(clock);
-        new Thread(clock).start();
+        clockThread = new Thread(clock);
+        clockThread.start();
     }
 
     private void handleTouchEvents() {
@@ -94,11 +98,25 @@ public class Game {
         imgBtnSmiley.setOnTouchListener(touchHandler::handleSmileyEvent);
     }
 
+    public void setFlagsLeftText(int num) {
+        ((Activity) context).runOnUiThread(() -> {
+            textFlagsLeft.setText(String.format("Flags left: %s", num));
+        });
+    }
+
     public void replaceImg(ImageButton imgBtn, ImageLoader newImg) {
         imgBtn.setImageResource(newImg.getId());
     }
 
+    public void stopClock() {
+        clockThread.interrupt();
+    }
+
     public Context getContext() {
         return context;
+    }
+
+    public ImageButton getImgBtnSmiley() {
+        return imgBtnSmiley;
     }
 }

@@ -8,6 +8,7 @@ public enum ImageLoader {
     MINE_TILE(R.drawable.minesweeper_mine),
     FLAG_ACTIVATED(R.drawable.minesweeper_flag_activated),
     FLAG_DEACTIVATED(R.drawable.minesweeper_flag_deactivated),
+    FLAG_TILE(R.drawable.minesweeper_flag_tile),
     SMILEY_GOOD(R.drawable.minesweeper_smiley_good),
     SMILEY_BAD(R.drawable.minesweeper_smiley_bad);
 

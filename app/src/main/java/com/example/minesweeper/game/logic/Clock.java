@@ -6,6 +6,8 @@ import android.graphics.Color;
 import android.util.Log;
 import android.widget.TextView;
 
+import com.example.minesweeper.game.main.Game;
+
 import java.util.Objects;
 
 public class Clock implements Runnable {
@@ -13,14 +15,14 @@ public class Clock implements Runnable {
     private TextView text;
 
     private int seconds, minutes, remainingTimeInSec;
-    private boolean isRed;
+    private boolean isRed, isStopped;
 
     public Clock(Context context, TextView text) {
         Objects.requireNonNull(context);
         Objects.requireNonNull(text);
         this.context = context;
         this.text = text;
-        isRed = false;
+        isRed = isStopped = false;
 
         remainingTimeInSec = 300;
         calculateRemainingTime();
@@ -59,17 +61,14 @@ public class Clock implements Runnable {
 
     @Override
     public void run() {
-        while(remainingTimeInSec >= 0) {
+        while(remainingTimeInSec >= 0 && !isStopped) {
             try {
                 calculateRemainingTime();
                 changeColor();
                 Thread.sleep(1000);
                 remainingTimeInSec--;
             } catch(InterruptedException e) {
-                Log.e(
-                        "CLOCK_THREAD",
-                        String.format("Der Thread der Uhr wurde unterbrochen: %s", e.getMessage())
-                );
+                isStopped = true;
             }
         }
     }

@@ -12,6 +12,7 @@ import android.widget.Toast;
 import com.example.minesweeper.game.main.Game;
 import com.example.minesweeper.game.ui.Field;
 import com.example.minesweeper.game.ui.ImageLoader;
+import com.example.minesweeper.game.utils.ColorPicker;
 import com.example.minesweeper.game.utils.Index;
 import com.example.minesweeper.game.utils.Tile;
 
@@ -25,7 +26,7 @@ public class TouchHandler {
     private Random random;
     private Tile[][] tileField;
 
-    private int mineProb, squareSize, mineCount;
+    private int mineProb, squareSize, mineCount, flagCount, revealedTiles;
     private boolean minesPlaced, placeFlagMode;
 
     public TouchHandler(Game game, Field field, int mineProb) {
@@ -41,7 +42,7 @@ public class TouchHandler {
                 game.getContext().getResources(), ImageLoader.COVER_TILE.getId()
         );
         flagDeactivatedBitmap = BitmapFactory.decodeResource(
-                game.getContext().getResources(), ImageLoader.FLAG_DEACTIVATED.getId()
+                game.getContext().getResources(), ImageLoader.FLAG_TILE.getId()
         );
         backgroundTileBitmap = BitmapFactory.decodeResource(
                 game.getContext().getResources(), ImageLoader.BACKGROUND_TILE.getId()
@@ -55,7 +56,7 @@ public class TouchHandler {
         squareSize = field.getSquareSize();
         minesPlaced = false;
         placeFlagMode = false;
-        mineCount = 0;
+        mineCount = flagCount = 0;
     }
 
     /**
@@ -75,6 +76,7 @@ public class TouchHandler {
 
         if(!minesPlaced) {
             placeMines(clickedTile);
+            game.setFlagsLeftText(flagCount);
             calculateTileNumbers();
         } else if(placeFlagMode) {
             checkFlagState(clickedTile);
@@ -90,7 +92,9 @@ public class TouchHandler {
             return false;
         }
         if(!minesPlaced) {
-            Toast.makeText(view.getContext(), "Reveal at least one tile!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(
+                    view.getContext(), "Reveal at least one tile!", Toast.LENGTH_SHORT
+            ).show();
             return false;
         }
         changeFlagMode(view);
@@ -101,6 +105,7 @@ public class TouchHandler {
         if(event.getAction() != MotionEvent.ACTION_DOWN) {
             return false;
         }
+        resetGame();
         return true;
     }
 
@@ -113,7 +118,6 @@ public class TouchHandler {
             for(Tile tile : tileCol) {
                 if(tile.getX() <= clickX && tile.getX() + squareSize >= clickX
                         && tile.getY() <= clickY && tile.getY() + squareSize >= clickY) {
-
                     return tile;
                 }
             }
@@ -139,6 +143,7 @@ public class TouchHandler {
             }
         }
 
+        flagCount = mineCount;
         minesPlaced = true;
     }
 
@@ -200,11 +205,14 @@ public class TouchHandler {
     private void checkFlagState(Tile tile) {
         if (tile.hasFlag()) {
             field.drawImg(coverTileBitmap, tile.getRect());
+            flagCount++;
         } else {
             field.drawImg(flagDeactivatedBitmap, tile.getRect());
+            flagCount--;
         }
 
         tile.switchFlag();
+        game.setFlagsLeftText(flagCount);
     }
 
     /**
@@ -216,6 +224,7 @@ public class TouchHandler {
             return;
         }
         tile.reveal();
+        revealedTiles++;
 
         if(tile.isMine()) {
             field.drawImg(mineBitmap, tile.getRect());
@@ -244,16 +253,15 @@ public class TouchHandler {
     private int selectColor(int num) {
         int color = Color.argb(255, 0, 0, 0);
 
-        // TODO: Change colors and use enum for that
         color = switch (num) {
-            case 1 -> Color.argb(255, 255, 0, 0);
-            case 2 -> Color.argb(255, 0, 255, 0);
-            case 3 -> Color.argb(255, 0, 0, 255);
-            case 4 -> Color.argb(255, 0, 50, 0);
-            case 5 -> Color.argb(255, 100, 0, 0);
-            case 6 -> Color.argb(255, 0, 100, 0);
-            case 7 -> Color.argb(255, 0, 0, 100);
-            case 8 -> Color.argb(255, 50, 50, 50);
+            case 1 -> ColorPicker.BLUE_1.getColor();
+            case 2 -> ColorPicker.GREEN_2.getColor();
+            case 3 -> ColorPicker.YELLOW_3.getColor();
+            case 4 -> ColorPicker.LIGHT_ORANGE_4.getColor();
+            case 5 -> ColorPicker.ORANGE_5.getColor();
+            case 6 -> ColorPicker.RED_6.getColor();
+            case 7 -> ColorPicker.VIOLET_7.getColor();
+            case 8 -> ColorPicker.PURPLE_8.getColor();
             default -> color;
         };
 
@@ -298,9 +306,33 @@ public class TouchHandler {
     
     private void checkGameState(Tile tile) {
         if(tile.isMine()) {
-            // TODO: Implement an end screen and change smiley face
-            Toast.makeText(game.getContext(), "You have lost!", Toast.LENGTH_SHORT).show();
+            endGame("Too bad! You have lost :(", ImageLoader.SMILEY_BAD);
+        } else if(revealedTiles == tileField.length * tileField[0].length - mineCount) {
+            endGame("Congrats! You have won :)", ImageLoader.SMILEY_GOOD);
         }
-        // TODO: Check if the player won
+    }
+
+    private void endGame(String msg, ImageLoader smileyID) {
+        game.stopClock();
+        game.replaceImg(game.getImgBtnSmiley(), smileyID);
+        Toast.makeText(game.getContext(), msg, Toast.LENGTH_SHORT).show();
+        revealAll();
+    }
+
+    private void revealAll() {
+        for(Tile[] tiles : tileField) {
+            for(Tile tile : tiles) {
+                revealTile(tile);
+            }
+        }
+    }
+
+    /**
+    * RESET
+    * */
+
+    private void resetGame() {
+        // TODO: Reset the game
+        game.replaceImg(game.getImgBtnSmiley(), ImageLoader.SMILEY_GOOD);
     }
 }
