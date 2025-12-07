@@ -3,10 +3,7 @@ package com.example.minesweeper.game.logic;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
-import android.util.Log;
 import android.widget.TextView;
-
-import com.example.minesweeper.game.main.Game;
 
 import java.util.Objects;
 

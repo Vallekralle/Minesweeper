@@ -34,10 +34,10 @@ public class Game {
     private Thread clockThread;
 
     public Game(Context context, Difficulty diff) {
-        this.diff = diff;
-        this.context = context;
         Objects.requireNonNull(diff);
         Objects.requireNonNull(context);
+        this.diff = diff;
+        this.context = context;
 
         // Initialize views and start thread to configure the canvas
         initViews();
@@ -66,7 +66,7 @@ public class Game {
     }
 
     private void start() {
-        textClock = ((Activity)context).findViewById(R.id.textClock);
+        textClock = ((Activity) context).findViewById(R.id.textClock);
         textFlagsLeft = ((Activity) context).findViewById(R.id.textFlagsLeft);
 
         field = new Field(context, canvas, diff);

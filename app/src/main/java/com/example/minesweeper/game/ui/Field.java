@@ -7,7 +7,6 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.widget.Toast;
 
 import com.example.minesweeper.game.logic.Difficulty;
 import com.example.minesweeper.game.utils.Index;
@@ -54,8 +53,8 @@ public class Field {
             startPosY = Math.abs((winHeight - squareSize * row) / 2);
         } else {
             squareSize = rowSize;
-            startPosX = Math.abs((winWidth - squareSize * col) / 2);
             startPosY = PADDING;
+            startPosX = Math.abs((winWidth - squareSize * col) / 2);
         }
     }
 
