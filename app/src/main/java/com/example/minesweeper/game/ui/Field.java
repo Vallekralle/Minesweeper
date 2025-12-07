@@ -97,6 +97,10 @@ public class Field {
         canvas.drawText(String.valueOf(tile.getNumber()), x, y, paint);
     }
 
+    public void reset() {
+        drawCoverField();
+    }
+
     /**
     * GETTER
     * */

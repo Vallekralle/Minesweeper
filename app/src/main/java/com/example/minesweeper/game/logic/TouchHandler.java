@@ -7,6 +7,7 @@ import android.graphics.Paint;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.minesweeper.game.main.Game;
@@ -54,8 +55,7 @@ public class TouchHandler {
         random = new Random();
         tileField = field.getTileField();
         squareSize = field.getSquareSize();
-        minesPlaced = false;
-        placeFlagMode = false;
+        minesPlaced = placeFlagMode = false;
         mineCount = flagCount = 0;
     }
 
@@ -76,7 +76,7 @@ public class TouchHandler {
 
         if(!minesPlaced) {
             placeMines(clickedTile);
-            game.setFlagsLeftText(flagCount);
+            game.setFlagsLeftText(String.valueOf(flagCount));
             calculateTileNumbers();
         } else if(placeFlagMode) {
             checkFlagState(clickedTile);
@@ -212,7 +212,7 @@ public class TouchHandler {
         }
 
         tile.switchFlag();
-        game.setFlagsLeftText(flagCount);
+        game.setFlagsLeftText(String.valueOf(flagCount));
     }
 
     /**
@@ -332,7 +332,8 @@ public class TouchHandler {
     * */
 
     private void resetGame() {
-        // TODO: Reset the game
-        game.replaceImg(game.getImgBtnSmiley(), ImageLoader.SMILEY_GOOD);
+        game.reset();
+        mineCount = revealedTiles = 0;
+        minesPlaced = placeFlagMode = false;
     }
 }

@@ -70,18 +70,11 @@ public class Game {
         textFlagsLeft = ((Activity) context).findViewById(R.id.textFlagsLeft);
 
         field = new Field(context, canvas, diff);
-        clock = new Clock(context, textClock);
 
         // Handle touch events on the image view
         handleTouchEvents();
 
-        /*
-        * Starting a new thread for the clock, which can be
-        * interrupted without disturbing other threads.
-        * */
-        Objects.requireNonNull(clock);
-        clockThread = new Thread(clock);
-        clockThread.start();
+        startClock();
     }
 
     private void handleTouchEvents() {
@@ -98,9 +91,9 @@ public class Game {
         imgBtnSmiley.setOnTouchListener(touchHandler::handleSmileyEvent);
     }
 
-    public void setFlagsLeftText(int num) {
+    public void setFlagsLeftText(String flagsLeft) {
         ((Activity) context).runOnUiThread(() -> {
-            textFlagsLeft.setText(String.format("Flags left: %s", num));
+            textFlagsLeft.setText(String.format("Flags left: %s", flagsLeft));
         });
     }
 
@@ -108,8 +101,33 @@ public class Game {
         imgBtn.setImageResource(newImg.getId());
     }
 
+    private void startClock() {
+        /*
+         * Starting a new thread for the clock, which can be
+         * interrupted without disturbing other threads.
+         * */
+        clock = new Clock(context, textClock);
+        Objects.requireNonNull(clock);
+
+        clockThread = new Thread(clock);
+        clockThread.start();
+    }
+
     public void stopClock() {
         clockThread.interrupt();
+    }
+
+    public void reset() {
+        field.reset();
+        setFlagsLeftText("?");
+
+        // Reset all image buttons
+        replaceImg(imgBtnSmiley, ImageLoader.SMILEY_GOOD);
+        replaceImg(imgBtnFlag, ImageLoader.FLAG_DEACTIVATED);
+
+        // Start new clock
+        stopClock();
+        startClock();
     }
 
     public Context getContext() {
